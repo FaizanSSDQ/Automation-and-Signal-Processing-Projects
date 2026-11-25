@@ -1,0 +1,37 @@
+# STM32CubeIDE / Eclipse build output
+Debug/
+Release/
+*.o
+*.d
+*.su
+*.cyclo
+*.elf
+*.map
+*.list
+*.hex
+*.bin
+.metadata/
+.settings/
+*.launch
+
+# PlatformIO / Arduino / ESP-IDF
+.pio/
+build/
+sdkconfig.old
+
+# MATLAB
+*.asv
+slprj/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
