@@ -1,0 +1,42 @@
+name: Firmware CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  stm32:
+    name: STM32 · ${{ matrix.project }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - stm32/dual-channel-adc-dma-sampler
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ARM GCC
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends gcc-arm-none-eabi libnewlib-arm-none-eabi
+
+      - name: Build firmware
+        run: make -j"$(nproc)"
+
+      - name: Host unit tests (C)
+        run: make test
+
+      - name: Python tool tests
+        if: hashFiles(format('{0}/tools/test_*.py', matrix.project)) != ''
+        run: |
+          pip install pytest
+          python -m pytest -q tools
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ hashFiles(format('{0}/Makefile', matrix.project)) }}-firmware
+          path: ${{ matrix.project }}/build/*.hex
