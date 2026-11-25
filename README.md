@@ -2,12 +2,14 @@
 
 [![Firmware CI](https://github.com/FaizanSSDQ/Automation-and-Signal-Processing-Projects/actions/workflows/firmware.yml/badge.svg)](https://github.com/FaizanSSDQ/Automation-and-Signal-Processing-Projects/actions/workflows/firmware.yml)
 ![STM32](https://img.shields.io/badge/STM32-HAL%20%7C%20FreeRTOS-03234B?logo=stmicroelectronics&logoColor=white)
+![nRF52](https://img.shields.io/badge/nRF52-Zephyr%20%7C%20BLE-00A9CE?logo=nordicsemiconductor&logoColor=white)
 ![ESP32](https://img.shields.io/badge/ESP32-Arduino%20%7C%20FreeRTOS-E7352C?logo=espressif&logoColor=white)
 ![MATLAB](https://img.shields.io/badge/MATLAB-DSP-0076A8)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-Firmware and signal-processing projects: real-time data acquisition with DMA, FreeRTOS task
-design, waveform generation, digital communication (FSK), logic analysis, and DSP fundamentals.
+Firmware and signal-processing projects: real-time data acquisition with DMA, FreeRTOS and
+Zephyr task design, Bluetooth Low Energy, waveform generation, digital communication (FSK),
+logic analysis, and DSP fundamentals.
 
 Every project is documented as an engineering case study: system block diagram, pin map,
 firmware architecture, timing analysis, design decisions, build instructions and a hardware
@@ -27,6 +29,12 @@ in CI on every push.
 | [FreeRTOS: task creation](stm32/freertos-task-creation) | NUCLEO-F103RB | Tasks, priorities, scheduling | 🔧 Being rebuilt |
 | [FreeRTOS: task timing](stm32/freertos-task-timing) | NUCLEO-F103RB | Periodic tasks and timing control | 🔧 Being rebuilt |
 | [FreeRTOS: mutex & semaphore](stm32/freertos-mutex-semaphore) | NUCLEO-F103RB | Resource sharing and synchronisation | 🔧 Being rebuilt |
+
+### Nordic nRF52 (Zephyr, nRF Connect SDK)
+
+| Project | Highlights | Status |
+|---|---|---|
+| [nRF52 projects](nrf52) | BLE, low-power design, sensor drivers and secure OTA updates | 🔧 In preparation |
 
 ### ESP32 (Arduino core, FreeRTOS)
 
@@ -56,6 +64,7 @@ in CI on every push.
 ## Repository layout
 ```
 stm32/    STM32CubeIDE projects (each with .ioc, Makefile, tests and docs)
+nrf52/    Nordic nRF52 projects on Zephyr / nRF Connect SDK
 esp32/    Arduino-core ESP32 sketches
 matlab/   MATLAB signal-processing scripts
 python/   Python simulations
@@ -68,7 +77,7 @@ and [Embedded-Systems-and-MATLAB-Project](https://github.com/FaizanSSDQ/Embedded
 ---
 ## 👤 About the Author
 
-**Faizan Saleem Siddiqui**, Embedded Firmware Engineer | Research Scholar
+**Faizan Saleem Siddiqui**, Embedded Firmware Engineer | Visiting Faculty | Research Scholar
 
 Electronics engineer with 2+ years of experience in embedded systems and firmware development.
 I build production firmware for **BLE wearables and biosignal devices** on Nordic nRF52 (Zephyr / nRF
@@ -78,7 +87,9 @@ FreeRTOS, real-time data acquisition, digital signal processing, industrial IoT,
 for data, automation and machine learning.
 
 - 🎓 MS Electronics, Quaid-i-Azam University, Islamabad (BS Electronics: 1st position, merit scholar)
-- 🧑‍🏫 Former Visiting Faculty, Embedded Systems, and Research Assistant, Autonomous Vehicles (COMSIP Lab)
+- 🧑‍🏫 Visiting Faculty Member, Quaid-i-Azam University: teaching Real-Time Systems (STM32, FreeRTOS),
+  Microcontroller Interfacing (ESP32) and AI/ML on Embedded Devices (TinyML)
+- 🔬 Former Research Assistant, Autonomous Vehicle Engineering (COMSIP Lab, QAU)
 - 🌍 Open to embedded / firmware engineering opportunities worldwide
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Faizan%20Saleem%20Siddiqui-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/faizan-saleem-siddiqui-4411bb247/)
