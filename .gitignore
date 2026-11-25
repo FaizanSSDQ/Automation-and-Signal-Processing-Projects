@@ -35,3 +35,6 @@ venv/
 Thumbs.db
 desktop.ini
 .vscode/
+
+# JetBrains IDE settings
+.idea/
