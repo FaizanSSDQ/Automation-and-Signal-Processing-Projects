@@ -23,7 +23,7 @@ in CI on every push.
 | Project | Board | Highlights | Status |
 |---|---|---|---|
 | [Dual-channel ADC sampler](stm32/dual-channel-adc-dma-sampler) | NUCLEO-L152RE | TIM3-triggered scan, ping-pong circular DMA, integer statistics, CRC-framed UART DMA telemetry, Python live viewer | ✅ Complete |
-| FSK modem | NUCLEO | Tone generation and Goertzel-based detection | 🔧 In progress |
+| [FSK modem](stm32/fsk-modem) | NUCLEO-L152RE | 1000-baud FSK over DAC/ADC: NCO transmitter, sliding-correlator receiver, UART-style framing, BER matching theory | ✅ Complete |
 | [Logic analyzer](stm32/logic-analyzer) | NUCLEO-F103RB | Timer-sampled digital capture | 🔧 Being rebuilt |
 | [Function generator](stm32/function-generator) | NUCLEO-F103RB | Lookup-table waveform synthesis | 🔧 Being rebuilt |
 | [FreeRTOS: task creation](stm32/freertos-task-creation) | NUCLEO-F103RB | Tasks, priorities, scheduling | 🔧 Being rebuilt |
