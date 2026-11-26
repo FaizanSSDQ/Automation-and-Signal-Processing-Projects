@@ -17,6 +17,7 @@ jobs:
           - stm32/fsk-modem
           - stm32/sump-logic-analyzer
           - stm32/dds-waveform-generator
+          - stm32/freertos-task-scheduling
     defaults:
       run:
         working-directory: ${{ matrix.project }}
