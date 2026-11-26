@@ -44,7 +44,7 @@ in CI on every push.
 | [ESP-NOW sensor network](esp32/espnow-sensor-network) | Deep-sleep nodes with alarm wake-up, CRC-checked packets, gateway dashboard with loss and RSSI per node, ThingSpeak upload | ✅ Complete |
 | [Ultrasonic and infrared radar](esp32/ultrasonic-radar) | 180° servo sweep, interrupt-timed echoes with temperature correction, object detection, live radar page in the browser | ✅ Complete |
 | [ESP32-CAM streaming server](esp32/esp32cam-streaming-server) | MJPEG video on its own server and core, login with lockout, stream token, snapshots and live camera settings | ✅ Complete |
-| [Function generator](esp32/function-generator) | Sine, square, triangle and sawtooth waveforms | 🔧 Being rebuilt |
+| [Wi-Fi waveform generator](esp32/wifi-waveform-generator) | DDS into both DACs through DMA, PolyBLEP anti-aliasing, sweeps, sync output, browser control with a preview of the real samples | ✅ Complete |
 | [Logic analyzer](esp32/logic-analyzer) | Digital signal capture and display | 🔧 Being rebuilt |
 
 ### MATLAB (signals and systems, DSP)
