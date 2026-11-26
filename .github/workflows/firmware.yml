@@ -19,6 +19,7 @@ jobs:
           - stm32/dds-waveform-generator
           - stm32/freertos-task-scheduling
           - stm32/freertos-periodic-tasks-jitter
+          - stm32/freertos-priority-inversion
     defaults:
       run:
         working-directory: ${{ matrix.project }}
