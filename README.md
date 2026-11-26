@@ -40,7 +40,7 @@ in CI on every push.
 
 | Project | Highlights | Status |
 |---|---|---|
-| [FreeRTOS robot controller](esp32/freertos-robot-controller) | Multi-task motor control for a mobile robot | 🔧 Being rebuilt |
+| [FreeRTOS Wi-Fi robot car](esp32/freertos-wifi-robot-car) | Dual-core tasks, phone joystick page, obstacle avoidance and line following, link watchdog and fused distance sensing | ✅ Complete |
 | [Function generator](esp32/function-generator) | Sine, square, triangle and sawtooth waveforms | 🔧 Being rebuilt |
 | [Logic analyzer](esp32/logic-analyzer) | Digital signal capture and display | 🔧 Being rebuilt |
 
