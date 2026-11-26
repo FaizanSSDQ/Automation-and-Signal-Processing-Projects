@@ -18,8 +18,10 @@ plots both channels live.
 - Self-describing telemetry protocol with sync word, sequence number and CRC-16
 - CPU load measured on target with the DWT cycle counter and reported in every block
 
+---
+
 <details>
-<summary><b>📘 More explanation for students</b> (click to expand)</summary>
+<summary><h2>📘 More Explanation for Students (click to expand)</h2></summary>
 
 **What is data acquisition?** Sensors such as microphones, thermistors, strain gauges or ECG
 electrodes produce *analog* voltages that change continuously. A microcontroller can only work

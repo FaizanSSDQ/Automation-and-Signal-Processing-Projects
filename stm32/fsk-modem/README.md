@@ -19,8 +19,10 @@ talk to each other.
 - Measured bit error rate matches the theoretical curve for non-coherent FSK
 - Portable modem core with 51 host test checks (noise, attenuation, DC offset, any bit alignment)
 
+---
+
 <details>
-<summary><b>📘 More explanation for students</b> (click to expand)</summary>
+<summary><h2>📘 More Explanation for Students (click to expand)</h2></summary>
 
 **What is a modem?** A wire, a radio channel or a telephone line cannot carry "ones and zeros"
 directly over long distances; it carries waves. A **mo**dulator-**dem**odulator turns digital

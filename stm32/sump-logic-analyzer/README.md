@@ -22,8 +22,10 @@ over the ST-LINK virtual COM port using the open **SUMP** protocol.
 - Hardware-independent core with 99 host test checks, a **host simulator** that runs the
   firmware's protocol and capture code on a PC, and 16 Python tests, all run in CI
 
+---
+
 <details>
-<summary><b>📘 More explanation for students</b> (click to expand)</summary>
+<summary><h2>📘 More Explanation for Students (click to expand)</h2></summary>
 
 **What is a logic analyzer?** An oscilloscope shows how a voltage changes over time, with all
 its detail. Digital circuits, though, only care whether a wire is LOW (0) or HIGH (1). A logic
