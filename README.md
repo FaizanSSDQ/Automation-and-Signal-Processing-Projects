@@ -42,6 +42,7 @@ in CI on every push.
 |---|---|---|
 | [FreeRTOS Wi-Fi robot car](esp32/freertos-wifi-robot-car) | Dual-core tasks, phone joystick page, obstacle avoidance and line following, link watchdog and fused distance sensing | ✅ Complete |
 | [ESP-NOW sensor network](esp32/espnow-sensor-network) | Deep-sleep nodes with alarm wake-up, CRC-checked packets, gateway dashboard with loss and RSSI per node, ThingSpeak upload | ✅ Complete |
+| [Ultrasonic and infrared radar](esp32/ultrasonic-radar) | 180° servo sweep, interrupt-timed echoes with temperature correction, object detection, live radar page in the browser | ✅ Complete |
 | [Function generator](esp32/function-generator) | Sine, square, triangle and sawtooth waveforms | 🔧 Being rebuilt |
 | [Logic analyzer](esp32/logic-analyzer) | Digital signal capture and display | 🔧 Being rebuilt |
 
@@ -71,7 +72,7 @@ matlab/   MATLAB signal-processing scripts
 python/   Python simulations
 ```
 
-Communication-system and sensor projects (NRF24, Bluetooth, radar, ESP32-CAM, IoT nodes) live in
+The original course versions of the ESP32 projects, and the communication-system projects (NRF24, Bluetooth), live in
 [Electronics-Engineering-Projects](https://github.com/FaizanSSDQ/Electronics-Engineering-Projects)
 and [Embedded-Systems-and-MATLAB-Project](https://github.com/FaizanSSDQ/Embedded-Systems-and-MATLAB-Project).
 
