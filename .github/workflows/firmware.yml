@@ -7,7 +7,7 @@ on:
 
 jobs:
   stm32:
-    name: STM32 · ${{ matrix.project }}
+    name: STM32 Â· ${{ matrix.project }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -48,13 +48,14 @@ jobs:
           path: ${{ matrix.project }}/build/*.hex
 
   esp32:
-    name: ESP32 · ${{ matrix.project }}
+    name: ESP32 Â· ${{ matrix.project }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         project:
           - esp32/freertos-wifi-robot-car
+          - esp32/espnow-sensor-network
     defaults:
       run:
         working-directory: ${{ matrix.project }}
