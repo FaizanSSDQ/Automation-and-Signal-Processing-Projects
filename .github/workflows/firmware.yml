@@ -59,6 +59,7 @@ jobs:
           - esp32/ultrasonic-radar
           - esp32/esp32cam-streaming-server
           - esp32/wifi-waveform-generator
+          - esp32/wifi-logic-analyzer
     defaults:
       run:
         working-directory: ${{ matrix.project }}
