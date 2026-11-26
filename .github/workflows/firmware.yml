@@ -15,6 +15,7 @@ jobs:
         project:
           - stm32/dual-channel-adc-dma-sampler
           - stm32/fsk-modem
+          - stm32/sump-logic-analyzer
     defaults:
       run:
         working-directory: ${{ matrix.project }}
