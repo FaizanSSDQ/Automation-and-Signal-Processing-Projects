@@ -57,6 +57,7 @@ jobs:
           - esp32/freertos-wifi-robot-car
           - esp32/espnow-sensor-network
           - esp32/ultrasonic-radar
+          - esp32/esp32cam-streaming-server
     defaults:
       run:
         working-directory: ${{ matrix.project }}
