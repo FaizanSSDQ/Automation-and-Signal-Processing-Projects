@@ -64,8 +64,8 @@ void Error_Handler(void);
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
-#define My_LED2_Pin GPIO_PIN_4
-#define My_LED2_GPIO_Port GPIOA
+#define LED2_Pin GPIO_PIN_4
+#define LED2_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
@@ -74,8 +74,18 @@ void Error_Handler(void);
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+#define TRACE_CONSOLE_Pin GPIO_PIN_12
+#define TRACE_CONSOLE_GPIO_Port GPIOB
+#define TRACE_RELATIVE_Pin GPIO_PIN_13
+#define TRACE_RELATIVE_GPIO_Port GPIOB
+#define TRACE_ABSOLUTE_Pin GPIO_PIN_14
+#define TRACE_ABSOLUTE_GPIO_Port GPIOB
+#define TRACE_INTERFERENCE_Pin GPIO_PIN_15
+#define TRACE_INTERFERENCE_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+/* All task-trace pins (one per traced task, see rtos_trace.c). */
+#define TRACE_ALL_PINS (TRACE_CONSOLE_Pin|TRACE_RELATIVE_Pin|TRACE_ABSOLUTE_Pin|TRACE_INTERFERENCE_Pin)
 
 /* USER CODE END Private defines */
 

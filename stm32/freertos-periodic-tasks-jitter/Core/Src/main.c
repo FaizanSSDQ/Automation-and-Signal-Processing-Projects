@@ -2,17 +2,19 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : FreeRTOS periodic tasks: vTaskDelay vs vTaskDelayUntil
   ******************************************************************************
-  * @attention
+  *   console      (high)          serial shell, timing reports
+  *   interference (above normal)  busy burst every 37 ms
+  *   relative     (normal)        10 ms task using vTaskDelay       (toggles PA4)
+  *   absolute     (normal)        10 ms task using vTaskDelayUntil  (toggles LD2)
+  * Every release is time-stamped with the DWT cycle counter; every context
+  * switch drives a trace pin (PB12..PB15) for a logic analyzer.
   *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
+  * Peripheral and RTOS objects below follow STM32CubeMX (RTOS_Periodic_Jitter.ioc);
+  * application code lives in app_periodic.c and USER CODE blocks.
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
+  * Author: Faizan Saleem Siddiqui (https://github.com/FaizanSSDQ)
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -22,70 +24,49 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "app_periodic.h"
 /* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for ConsoleTask */
+osThreadId_t ConsoleTaskHandle;
+const osThreadAttr_t ConsoleTask_attributes = {
+  .name = "console",
+  .stack_size = 384 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for InterferenceTask */
+osThreadId_t InterferenceTaskHandle;
+const osThreadAttr_t InterferenceTask_attributes = {
+  .name = "interference",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal,
+};
+/* Definitions for RelativeTask */
+osThreadId_t RelativeTaskHandle;
+const osThreadAttr_t RelativeTask_attributes = {
+  .name = "relative",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for MyTask_1_ */
-osThreadId_t MyTask_1_Handle;
-const osThreadAttr_t MyTask_1__attributes = {
-  .name = "MyTask_1_",
+/* Definitions for AbsoluteTask */
+osThreadId_t AbsoluteTaskHandle;
+const osThreadAttr_t AbsoluteTask_attributes = {
+  .name = "absolute",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for MyTask_2 */
-osThreadId_t MyTask_2Handle;
-const osThreadAttr_t MyTask_2_attributes = {
-  .name = "MyTask_2",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
-};
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-void StartDefaultTask(void *argument);
-void Task_1_Func(void *argument);
-void Task_2_Fun(void *argument);
-
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-uint16_t Init_Time;
-uint8_t TaskState;
-/* USER CODE END 0 */
+void ConsoleTask_Entry(void *argument);
+void InterferenceTask_Entry(void *argument);
+void RelativeTask_Entry(void *argument);
+void AbsoluteTask_Entry(void *argument);
 
 /**
   * @brief  The application entry point.
@@ -93,70 +74,41 @@ uint8_t TaskState;
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
-
-  Init_Time = HAL_GetTick();
-  /* USER CODE END 2 */
 
   /* Init scheduler */
   osKernelInitialize();
 
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
   /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
+  app_init();
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of ConsoleTask */
+  ConsoleTaskHandle = osThreadNew(ConsoleTask_Entry, NULL, &ConsoleTask_attributes);
 
-  /* creation of MyTask_1_ */
-  MyTask_1_Handle = osThreadNew(Task_1_Func, NULL, &MyTask_1__attributes);
+  /* creation of InterferenceTask */
+  InterferenceTaskHandle = osThreadNew(InterferenceTask_Entry, NULL, &InterferenceTask_attributes);
 
-  /* creation of MyTask_2 */
-  MyTask_2Handle = osThreadNew(Task_2_Fun, NULL, &MyTask_2_attributes);
+  /* creation of RelativeTask */
+  RelativeTaskHandle = osThreadNew(RelativeTask_Entry, NULL, &RelativeTask_attributes);
+
+  /* creation of AbsoluteTask */
+  AbsoluteTaskHandle = osThreadNew(AbsoluteTask_Entry, NULL, &AbsoluteTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
+  app_register_tasks(ConsoleTaskHandle, RelativeTaskHandle, AbsoluteTaskHandle, InterferenceTaskHandle);
   /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
   osKernelStart();
@@ -175,6 +127,7 @@ int main(void)
 
 /**
   * @brief System Clock Configuration
+  *        HSI 8 MHz / 2 x 16 = 64 MHz SYSCLK; APB1 32 MHz, APB2 64 MHz.
   * @retval None
   */
 void SystemClock_Config(void)
@@ -212,20 +165,12 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief USART2 Initialization Function
+  * @brief USART2 Initialization Function (console via ST-LINK virtual COM port)
   * @param None
   * @retval None
   */
 static void MX_USART2_UART_Init(void)
 {
-
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -238,10 +183,6 @@ static void MX_USART2_UART_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN USART2_Init 2 */
-
-  /* USER CODE END USART2_Init 2 */
-
 }
 
 /**
@@ -252,8 +193,6 @@ static void MX_USART2_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -262,88 +201,90 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, My_LED2_Pin|LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED2_Pin|LD2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : B1_Pin */
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, TRACE_CONSOLE_Pin|TRACE_RELATIVE_Pin|TRACE_ABSOLUTE_Pin|TRACE_INTERFERENCE_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : B1_Pin (pressed = low) */
   GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : My_LED2_Pin LD2_Pin */
-  GPIO_InitStruct.Pin = My_LED2_Pin|LD2_Pin;
+  /*Configure GPIO pins : LED2_Pin LD2_Pin */
+  GPIO_InitStruct.Pin = LED2_Pin|LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  /*Configure GPIO pins : TRACE_CONSOLE_Pin TRACE_RELATIVE_Pin TRACE_ABSOLUTE_Pin TRACE_INTERFERENCE_Pin */
+  GPIO_InitStruct.Pin = TRACE_CONSOLE_Pin|TRACE_RELATIVE_Pin|TRACE_ABSOLUTE_Pin|TRACE_INTERFERENCE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* EXTI interrupt init (priority 6: may call FreeRTOS ISR API) */
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 6, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
 
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_ConsoleTask_Entry */
 /**
-  * @brief  Function implementing the defaultTask thread.
+  * @brief  Function implementing the ConsoleTask thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+/* USER CODE END Header_ConsoleTask_Entry */
+void ConsoleTask_Entry(void *argument)
 {
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END 5 */
+  /* USER CODE BEGIN ConsoleTask_Entry */
+  app_console_task(argument);
+  /* USER CODE END ConsoleTask_Entry */
 }
 
-/* USER CODE BEGIN Header_Task_1_Func */
+/* USER CODE BEGIN Header_InterferenceTask_Entry */
 /**
-* @brief Function implementing the MyTask_1_ thread.
+* @brief Function implementing the InterferenceTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_Task_1_Func */
-void Task_1_Func(void *argument)
+/* USER CODE END Header_InterferenceTask_Entry */
+void InterferenceTask_Entry(void *argument)
 {
-  /* USER CODE BEGIN Task_1_Func */
-  /* Infinite loop */
-
-  for(;;)
-  {
-	  HAL_GPIO_TogglePin(LD2_GPIO_Port,LD2_Pin);
-    osDelay(1);
-  }
-  /* USER CODE END Task_1_Func */
+  /* USER CODE BEGIN InterferenceTask_Entry */
+  app_interference_task(argument);
+  /* USER CODE END InterferenceTask_Entry */
 }
 
-/* USER CODE BEGIN Header_Task_2_Fun */
+/* USER CODE BEGIN Header_RelativeTask_Entry */
 /**
-* @brief Function implementing the My_Task_2 thread.
+* @brief Function implementing the RelativeTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_Task_2_Fun */
-void Task_2_Fun(void *argument)
+/* USER CODE END Header_RelativeTask_Entry */
+void RelativeTask_Entry(void *argument)
 {
-  /* USER CODE BEGIN Task_2_Fun */
-  /* Infinite loop */
-  for(;;)
-  {
-	  HAL_GPIO_TogglePin(LD2_GPIO_Port,My_LED2_Pin);
-    osDelay(1);
-  }
-  /* USER CODE END Task_2_Fun */
+  /* USER CODE BEGIN RelativeTask_Entry */
+  app_relative_task(argument);
+  /* USER CODE END RelativeTask_Entry */
+}
+
+/* USER CODE BEGIN Header_AbsoluteTask_Entry */
+/**
+* @brief Function implementing the AbsoluteTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_AbsoluteTask_Entry */
+void AbsoluteTask_Entry(void *argument)
+{
+  /* USER CODE BEGIN AbsoluteTask_Entry */
+  app_absolute_task(argument);
+  /* USER CODE END AbsoluteTask_Entry */
 }
 
 /**
@@ -356,15 +297,9 @@ void Task_2_Fun(void *argument)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM4) {
     HAL_IncTick();
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
 
 /**
@@ -374,7 +309,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)
   {
@@ -393,8 +327,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  (void)file;
+  (void)line;
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
