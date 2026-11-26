@@ -18,6 +18,7 @@ jobs:
           - stm32/sump-logic-analyzer
           - stm32/dds-waveform-generator
           - stm32/freertos-task-scheduling
+          - stm32/freertos-periodic-tasks-jitter
     defaults:
       run:
         working-directory: ${{ matrix.project }}
