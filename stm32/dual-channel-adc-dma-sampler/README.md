@@ -18,6 +18,40 @@ plots both channels live.
 - Self-describing telemetry protocol with sync word, sequence number and CRC-16
 - CPU load measured on target with the DWT cycle counter and reported in every block
 
+<details>
+<summary><b>📘 More explanation for students</b> (click to expand)</summary>
+
+**What is data acquisition?** Sensors such as microphones, thermistors, strain gauges or ECG
+electrodes produce *analog* voltages that change continuously. A microcontroller can only work
+with numbers, so its **ADC** (analog-to-digital converter) measures the voltage and turns it into
+a number, here 0 to 4095 for 0 to 3.3 V. Doing this repeatedly at a fixed rate is called
+**sampling**, and the whole chain from sensor to stored numbers is a data-acquisition (DAQ)
+system. This project samples two inputs 2000 times per second each, summarises them and streams
+the results to a PC.
+
+**Why use a timer and DMA instead of a simple loop?** If the program read the ADC in a loop with
+delays, the time between samples would wobble whenever the CPU was busy elsewhere, and uneven
+sampling distorts any later signal processing. Instead a hardware timer (TIM3) starts each ADC
+conversion at exactly the right moment. When a conversion finishes, the **DMA controller**, a
+hardware unit that moves data without the CPU, stores the result in memory. The CPU is not
+involved in sampling at all, so the timing stays perfect.
+
+**What is a ping-pong buffer?** The DMA fills one memory buffer that is split into two halves.
+While it fills the second half, the CPU processes the first half, and then they swap, like two
+players hitting a ball back and forth. The CPU never reads data that is still being written, and
+no sample is lost as long as processing a half takes less time than filling it (128 ms here). For
+each block the firmware calculates the minimum, maximum, average and AC RMS (a measure of signal
+strength) of both channels, using integer maths because this Cortex-M3 has no floating-point
+unit. It also measures how much CPU time this took, using the processor's cycle counter.
+
+**How do the results reach the PC safely?** The results are packed into small binary **frames**:
+a fixed start pattern so the PC can find the beginning of a frame, a sequence number so missing
+frames are noticed, the data, and a **CRC** checksum so damaged frames are detected and dropped.
+The frames are sent over the USB serial port, again using DMA so sending never pauses the
+sampling. On the PC, a Python program reads the frames, checks them and plots both channels live.
+
+</details>
+
 ---
 
 ## System overview
