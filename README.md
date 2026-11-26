@@ -25,7 +25,7 @@ in CI on every push.
 | [Dual-channel ADC sampler](stm32/dual-channel-adc-dma-sampler) | NUCLEO-L152RE | TIM3-triggered scan, ping-pong circular DMA, integer statistics, CRC-framed UART DMA telemetry, Python live viewer | ✅ Complete |
 | [FSK modem](stm32/fsk-modem) | NUCLEO-L152RE | 1000-baud FSK over DAC/ADC: NCO transmitter, sliding-correlator receiver, UART-style framing, BER matching theory | ✅ Complete |
 | [8-channel logic analyzer](stm32/sump-logic-analyzer) | NUCLEO-F103RB | 4 MS/s timer-paced GPIO DMA, level and edge triggers with pre-trigger, SUMP protocol for PulseView, host simulator | ✅ Complete |
-| [Function generator](stm32/function-generator) | NUCLEO-F103RB | Lookup-table waveform synthesis | 🔧 Being rebuilt |
+| [DDS waveform generator](stm32/dds-waveform-generator) | NUCLEO-F103RB | 0.01 Hz–20 kHz DDS, PWM DAC fed by DMA burst, PolyBLEP anti-aliasing, sweeps, serial control | ✅ Complete |
 | [FreeRTOS: task creation](stm32/freertos-task-creation) | NUCLEO-F103RB | Tasks, priorities, scheduling | 🔧 Being rebuilt |
 | [FreeRTOS: task timing](stm32/freertos-task-timing) | NUCLEO-F103RB | Periodic tasks and timing control | 🔧 Being rebuilt |
 | [FreeRTOS: mutex & semaphore](stm32/freertos-mutex-semaphore) | NUCLEO-F103RB | Resource sharing and synchronisation | 🔧 Being rebuilt |
