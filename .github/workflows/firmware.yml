@@ -7,7 +7,7 @@ on:
 
 jobs:
   stm32:
-    name: STM32 Â· ${{ matrix.project }}
+    name: STM32 · ${{ matrix.project }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -48,7 +48,7 @@ jobs:
           path: ${{ matrix.project }}/build/*.hex
 
   esp32:
-    name: ESP32 Â· ${{ matrix.project }}
+    name: ESP32 · ${{ matrix.project }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
