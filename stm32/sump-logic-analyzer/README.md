@@ -22,6 +22,47 @@ over the ST-LINK virtual COM port using the open **SUMP** protocol.
 - Hardware-independent core with 99 host test checks, a **host simulator** that runs the
   firmware's protocol and capture code on a PC, and 16 Python tests, all run in CI
 
+<details>
+<summary><b>📘 More explanation for students</b> (click to expand)</summary>
+
+**What is a logic analyzer?** An oscilloscope shows how a voltage changes over time, with all
+its detail. Digital circuits, though, only care whether a wire is LOW (0) or HIGH (1). A logic
+analyzer records just that, for many wires at once, very quickly, and then draws them as a
+timing diagram. Engineers use one to answer questions like "did the microcontroller actually send
+the byte I think it sent?", "is my SPI clock running at the right speed?" or "which signal
+changed first?". Commercial analyzers cost from about $15 to thousands of dollars; this project
+turns a low-cost development board into one.
+
+**How does this one sample the wires?** The eight inputs are pins PC0–PC7, and the STM32 has a
+register (`GPIOC->IDR`) whose bits always show the current level of those pins. A hardware timer
+(TIM2) "ticks" at the chosen sample rate, for example one million times per second. On every
+tick the **DMA controller**, a small piece of hardware that copies data without using the CPU,
+copies that register into memory. Because no software runs per sample, the samples are perfectly
+evenly spaced, and the CPU is free for other work. The memory is used as a **ring buffer**: when
+the DMA reaches the end it starts again at the beginning, overwriting the oldest samples, so the
+buffer always holds the most recent 12 288 samples.
+
+**What is a trigger, and why "pre-trigger"?** Usually you only care about a short moment, such
+as when a button is pressed or a message starts. A **trigger** is the condition that marks that
+moment, for example "channel 3 goes from HIGH to LOW" (a *falling edge*, which is how every UART
+byte begins). The firmware checks each new sample against the trigger. Because the ring buffer
+already holds the recent past, the capture can include what happened *before* the trigger as
+well as after it; that is the *pre-trigger* part. Seeing the lead-up to an event is often
+exactly what reveals a bug.
+
+**What is SUMP, and how does the PC get the data?** After the capture, the data must reach a PC
+program that draws it. Instead of inventing a new set of commands, the firmware speaks **SUMP**,
+the serial command language of an open-source FPGA logic analyzer (the "SUMP" project, 2007) that
+many hobby analyzers later copied. SUMP is the project's name, not an abbreviation. The PC sends
+short commands such as "reset", "who are you?", "sample at 1 MHz", "capture 4096 samples" and
+"run"; the board answers with its name and then the samples. Because the free program
+**PulseView** already understands SUMP, it works with this board immediately, and its *protocol
+decoders* can even turn the captured waveforms back into readable UART text, SPI bytes or I²C
+messages. To try everything without extra hardware, the board also generates its own test
+signals (PWM waves and a UART message) that you connect to the inputs with jumper wires.
+
+</details>
+
 ---
 
 ## Try it
