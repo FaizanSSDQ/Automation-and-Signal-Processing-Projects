@@ -19,6 +19,44 @@ talk to each other.
 - Measured bit error rate matches the theoretical curve for non-coherent FSK
 - Portable modem core with 51 host test checks (noise, attenuation, DC offset, any bit alignment)
 
+<details>
+<summary><b>📘 More explanation for students</b> (click to expand)</summary>
+
+**What is a modem?** A wire, a radio channel or a telephone line cannot carry "ones and zeros"
+directly over long distances; it carries waves. A **mo**dulator-**dem**odulator turns digital
+data into a signal that suits the channel, and turns the received signal back into data. Old
+dial-up internet modems, garage remote controls and many simple radio links work this way. This
+project builds both halves in firmware on one STM32 board: text typed on a PC goes out of the
+board as sound-frequency tones and comes back in through another pin, where it is decoded and
+printed.
+
+**What is FSK?** In **Frequency-Shift Keying** each bit is sent as a short burst of a tone, and
+the *frequency* of the tone tells which bit it is: here a 1 kHz tone means "1" and a 2 kHz tone
+means "0". Each bit lasts 1 ms (1000 bits per second). The tones are made by the DAC
+(digital-to-analog converter), which outputs voltages from numbers. A **numerically controlled
+oscillator** steps through a table of sine values: stepping faster gives a higher frequency, and
+switching between the two step sizes changes the tone without any jump in the waveform, which
+keeps the signal clean.
+
+**How does the receiver know which tone it hears?** The ADC (analog-to-digital converter)
+measures the incoming voltage 16 000 times per second. For each tone, the receiver multiplies the
+last 16 samples (exactly one bit) by a reference sine and cosine of that tone and adds the
+results; this is called **correlation**, and it gives a large number only when the input
+contains that tone. Comparing the "1 kHz energy" with the "2 kHz energy" decides the bit. Using
+both sine and cosine means the receiver does not need to know the exact phase of the incoming
+wave, which keeps it simple.
+
+**How are bits grouped into characters?** Like a normal serial port (UART), every character is
+sent as a **start bit** (0), eight data bits and a **stop bit** (1); between characters the line
+rests at "1". The receiver waits for the 1→0 change that marks a start bit, then reads each bit
+in its middle, and checks that the stop bit is really 1. If it is not, the character is rejected
+as a *framing error*. Because each character carries its own start bit, small timing differences
+between transmitter and receiver never add up. The Python model in `tools/` also adds random
+noise to the signal and shows that the number of bit errors matches the textbook formula for
+this kind of receiver.
+
+</details>
+
 ---
 
 ## Try it
