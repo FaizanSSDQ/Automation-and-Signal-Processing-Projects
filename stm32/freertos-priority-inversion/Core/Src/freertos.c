@@ -24,6 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdint.h>
 
 /* USER CODE END Includes */
 
@@ -54,6 +55,44 @@
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+/* Hook prototypes */
+void configureTimerForRunTimeStats(void);
+unsigned long getRunTimeCounterValue(void);
+void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName);
+void vApplicationMallocFailedHook(void);
+
+/* Run-time statistics: the DWT cycle counter (64 MHz, wraps every 67 s;
+   statistics are taken over 1 s windows, so the wrap is harmless). */
+void configureTimerForRunTimeStats(void)
+{
+    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+    DWT->CYCCNT = 0u;
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+}
+
+unsigned long getRunTimeCounterValue(void)
+{
+    return DWT->CYCCNT;
+}
+
+/* A stack overflow or failed allocation is a design error: stop with LD2 on. */
+void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName)
+{
+    (void)xTask;
+    (void)pcTaskName;
+    taskDISABLE_INTERRUPTS();
+    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+    for (;;) {
+    }
+}
+
+void vApplicationMallocFailedHook(void)
+{
+    taskDISABLE_INTERRUPTS();
+    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+    for (;;) {
+    }
+}
 
 /* USER CODE END Application */
 
