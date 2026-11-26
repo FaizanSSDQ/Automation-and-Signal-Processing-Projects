@@ -27,7 +27,7 @@ in CI on every push.
 | [8-channel logic analyzer](stm32/sump-logic-analyzer) | NUCLEO-F103RB | 4 MS/s timer-paced GPIO DMA, level and edge triggers with pre-trigger, SUMP protocol for PulseView, host simulator | ✅ Complete |
 | [DDS waveform generator](stm32/dds-waveform-generator) | NUCLEO-F103RB | 0.01 Hz–20 kHz DDS, PWM DAC fed by DMA burst, PolyBLEP anti-aliasing, sweeps, serial control | ✅ Complete |
 | [FreeRTOS task scheduling](stm32/freertos-task-scheduling) | NUCLEO-F103RB | Live priorities, preemption, starvation and time slicing; per-task CPU % from run-time stats; task-switch trace pins | ✅ Complete |
-| [FreeRTOS: task timing](stm32/freertos-task-timing) | NUCLEO-F103RB | Periodic tasks and timing control | 🔧 Being rebuilt |
+| [Periodic tasks: drift vs jitter](stm32/freertos-periodic-tasks-jitter) | NUCLEO-F103RB | vTaskDelay vs vTaskDelayUntil under interference, cycle-counter timestamps, live period histograms | ✅ Complete |
 | [FreeRTOS: mutex & semaphore](stm32/freertos-mutex-semaphore) | NUCLEO-F103RB | Resource sharing and synchronisation | 🔧 Being rebuilt |
 
 ### Nordic nRF52 (Zephyr, nRF Connect SDK)
