@@ -74,8 +74,18 @@ void Error_Handler(void);
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+#define TRACE_CONSOLE_Pin GPIO_PIN_12
+#define TRACE_CONSOLE_GPIO_Port GPIOB
+#define TRACE_WORKER_Pin GPIO_PIN_13
+#define TRACE_WORKER_GPIO_Port GPIOB
+#define TRACE_BLINK_FAST_Pin GPIO_PIN_14
+#define TRACE_BLINK_FAST_GPIO_Port GPIOB
+#define TRACE_BLINK_SLOW_Pin GPIO_PIN_15
+#define TRACE_BLINK_SLOW_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+/* All task-trace pins (one per traced task, see rtos_trace.c). */
+#define TRACE_ALL_PINS (TRACE_CONSOLE_Pin|TRACE_WORKER_Pin|TRACE_BLINK_FAST_Pin|TRACE_BLINK_SLOW_Pin)
 
 /* USER CODE END Private defines */
 

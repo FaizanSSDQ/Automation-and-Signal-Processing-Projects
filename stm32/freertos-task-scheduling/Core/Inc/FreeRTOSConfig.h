@@ -60,9 +60,13 @@
 #define configTICK_RATE_HZ                       ((TickType_t)1000)
 #define configMAX_PRIORITIES                     ( 56 )
 #define configMINIMAL_STACK_SIZE                 ((uint16_t)128)
-#define configTOTAL_HEAP_SIZE                    ((size_t)3072)
+#define configTOTAL_HEAP_SIZE                    ((size_t)6144)
 #define configMAX_TASK_NAME_LEN                  ( 16 )
 #define configUSE_TRACE_FACILITY                 1
+#define configGENERATE_RUN_TIME_STATS            1
+#define configUSE_APPLICATION_TASK_TAG           1
+#define configCHECK_FOR_STACK_OVERFLOW           2
+#define configUSE_MALLOC_FAILED_HOOK             1
 #define configUSE_16_BIT_TICKS                   0
 #define configUSE_MUTEXES                        1
 #define configQUEUE_REGISTRY_SIZE                8
@@ -143,7 +147,18 @@ standard names. */
 #define xPortSysTickHandler SysTick_Handler
 
 /* USER CODE BEGIN Defines */
-/* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
+/* Run-time statistics count CPU cycles (DWT->CYCCNT, see freertos.c). */
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS configureTimerForRunTimeStats
+#define portGET_RUN_TIME_COUNTER_VALUE getRunTimeCounterValue
+
+/* Task-switch trace: every task carries a GPIO mask as its application tag;
+   on each switch the incoming task's pin goes high and the others low. */
+#if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
+void configureTimerForRunTimeStats(void);
+unsigned long getRunTimeCounterValue(void);
+void rtos_trace_switched_in(uint32_t tag);
+#endif
+#define traceTASK_SWITCHED_IN() rtos_trace_switched_in((uint32_t)pxCurrentTCB->pxTaskTag)
 /* USER CODE END Defines */
 
 #endif /* FREERTOS_CONFIG_H */

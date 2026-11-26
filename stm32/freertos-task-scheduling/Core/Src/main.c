@@ -2,17 +2,21 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : FreeRTOS scheduling demo on NUCLEO-F103RB
   ******************************************************************************
-  * @attention
+  * Four application tasks share the CPU under the FreeRTOS fixed-priority
+  * preemptive scheduler:
+  *   console    (high)    serial shell, run-time statistics ("top")
+  *   worker     (below)   adjustable CPU load, 100 ms period
+  *   blink_fast (low)     LD2, 100 ms
+  *   blink_slow (low)     external LED on PA4, 500 ms
+  * Priorities, load and suspension are changed live from the terminal; every
+  * context switch drives a trace pin (PB12..PB15) for a logic analyzer.
   *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
+  * Peripheral and RTOS objects below follow STM32CubeMX (RTOS_Scheduling.ioc);
+  * application code lives in app_sched.c and USER CODE blocks.
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
+  * Author: Faizan Saleem Siddiqui (https://github.com/FaizanSSDQ)
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -22,71 +26,49 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "app_sched.h"
 /* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+/* Definitions for ConsoleTask */
+osThreadId_t ConsoleTaskHandle;
+const osThreadAttr_t ConsoleTask_attributes = {
+  .name = "console",
+  .stack_size = 384 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
 };
-/* Definitions for LED_1_Task */
-osThreadId_t LED_1_TaskHandle;
-const osThreadAttr_t LED_1_Task_attributes = {
-  .name = "LED_1_Task",
+/* Definitions for WorkerTask */
+osThreadId_t WorkerTaskHandle;
+const osThreadAttr_t WorkerTask_attributes = {
+  .name = "worker",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityBelowNormal,
+};
+/* Definitions for BlinkFastTask */
+osThreadId_t BlinkFastTaskHandle;
+const osThreadAttr_t BlinkFastTask_attributes = {
+  .name = "blink_fast",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for LED_2_Task */
-osThreadId_t LED_2_TaskHandle;
-const osThreadAttr_t LED_2_Task_attributes = {
-  .name = "LED_2_Task",
+/* Definitions for BlinkSlowTask */
+osThreadId_t BlinkSlowTaskHandle;
+const osThreadAttr_t BlinkSlowTask_attributes = {
+  .name = "blink_slow",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-void StartDefaultTask(void *argument);
-void LED_1_Blink(void *argument);
-void LED_2_Blink(void *argument);
-
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-uint16_t tim_val;
-uint16_t TaskState=0;
-uint16_t LED1Delay;
-uint16_t LED2Delay;
-
-/* USER CODE END 0 */
+void ConsoleTask_Entry(void *argument);
+void WorkerTask_Entry(void *argument);
+void BlinkFastTask_Entry(void *argument);
+void BlinkSlowTask_Entry(void *argument);
 
 /**
   * @brief  The application entry point.
@@ -94,74 +76,44 @@ uint16_t LED2Delay;
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
-tim_val = HAL_GetTick();
-  /* USER CODE END 2 */
 
   /* Init scheduler */
   osKernelInitialize();
 
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
   /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
+  app_init();
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of ConsoleTask */
+  ConsoleTaskHandle = osThreadNew(ConsoleTask_Entry, NULL, &ConsoleTask_attributes);
 
-  /* creation of LED_1_Task */
-  LED_1_TaskHandle = osThreadNew(LED_1_Blink, NULL, &LED_1_Task_attributes);
+  /* creation of WorkerTask */
+  WorkerTaskHandle = osThreadNew(WorkerTask_Entry, NULL, &WorkerTask_attributes);
 
-  /* creation of LED_2_Task */
-  LED_2_TaskHandle = osThreadNew(LED_2_Blink, NULL, &LED_2_Task_attributes);
+  /* creation of BlinkFastTask */
+  BlinkFastTaskHandle = osThreadNew(BlinkFastTask_Entry, NULL, &BlinkFastTask_attributes);
+
+  /* creation of BlinkSlowTask */
+  BlinkSlowTaskHandle = osThreadNew(BlinkSlowTask_Entry, NULL, &BlinkSlowTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
+  app_register_tasks(ConsoleTaskHandle, WorkerTaskHandle, BlinkFastTaskHandle, BlinkSlowTaskHandle);
   /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
   osKernelStart();
-
-
 
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
@@ -177,6 +129,7 @@ tim_val = HAL_GetTick();
 
 /**
   * @brief System Clock Configuration
+  *        HSI 8 MHz / 2 x 16 = 64 MHz SYSCLK; APB1 32 MHz, APB2 64 MHz.
   * @retval None
   */
 void SystemClock_Config(void)
@@ -214,20 +167,12 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief USART2 Initialization Function
+  * @brief USART2 Initialization Function (console via ST-LINK virtual COM port)
   * @param None
   * @retval None
   */
 static void MX_USART2_UART_Init(void)
 {
-
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -240,10 +185,6 @@ static void MX_USART2_UART_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN USART2_Init 2 */
-
-  /* USER CODE END USART2_Init 2 */
-
 }
 
 /**
@@ -254,8 +195,6 @@ static void MX_USART2_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -266,9 +205,12 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED2_Pin|LD2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : B1_Pin */
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, TRACE_CONSOLE_Pin|TRACE_WORKER_Pin|TRACE_BLINK_FAST_Pin|TRACE_BLINK_SLOW_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : B1_Pin (pressed = low) */
   GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
@@ -279,104 +221,72 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  /*Configure GPIO pins : TRACE_CONSOLE_Pin TRACE_WORKER_Pin TRACE_BLINK_FAST_Pin TRACE_BLINK_SLOW_Pin */
+  GPIO_InitStruct.Pin = TRACE_CONSOLE_Pin|TRACE_WORKER_Pin|TRACE_BLINK_FAST_Pin|TRACE_BLINK_SLOW_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* EXTI interrupt init (priority 6: may call FreeRTOS ISR API) */
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 6, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
 
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_ConsoleTask_Entry */
 /**
-  * @brief  Function implementing the defaultTask thread.
+  * @brief  Function implementing the ConsoleTask thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+/* USER CODE END Header_ConsoleTask_Entry */
+void ConsoleTask_Entry(void *argument)
 {
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END 5 */
+  /* USER CODE BEGIN ConsoleTask_Entry */
+  app_console_task(argument);
+  /* USER CODE END ConsoleTask_Entry */
 }
 
-/* USER CODE BEGIN Header_LED_1_Blink */
+/* USER CODE BEGIN Header_WorkerTask_Entry */
 /**
-* @brief Function implementing the LED_1_Task thread.
+* @brief Function implementing the WorkerTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_LED_1_Blink */
-void LED_1_Blink(void *argument)
+/* USER CODE END Header_WorkerTask_Entry */
+void WorkerTask_Entry(void *argument)
 {
-  /* USER CODE BEGIN LED_1_Blink */
-  /* Infinite loop */
-
-
-  for(;;)
-  {
-	  	  if (TaskState = 1)
-	  		  LED1Delay = 400;
-	  	  else
-			LED1Delay = 200;
-
-    osDelay(LED1Delay);
-    HAL_GPIO_TogglePin(GPIOA , GPIO_PIN_5);
-    	if (HAL_GetTick()- tim_val > 5000)
-    	{
-    		//tim_val = HAL_GetTick();
-    		osThreadSuspend(LED_1_TaskHandle);
-    	}
-
-    	if (HAL_GetTick()- tim_val > 15000)
-    	{
-    		tim_val = HAL_GetTick();
-    		osThreadResume(LED_2_TaskHandle);
-    		TaskState=0;
-    	}
-
-
-
-  }
-  /* USER CODE END LED_1_Blink */
+  /* USER CODE BEGIN WorkerTask_Entry */
+  app_worker_task(argument);
+  /* USER CODE END WorkerTask_Entry */
 }
 
-/* USER CODE BEGIN Header_LED_2_Blink */
+/* USER CODE BEGIN Header_BlinkFastTask_Entry */
 /**
-* @brief Function implementing the LED_2_Task thread.
+* @brief Function implementing the BlinkFastTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_LED_2_Blink */
-void LED_2_Blink(void *argument)
+/* USER CODE END Header_BlinkFastTask_Entry */
+void BlinkFastTask_Entry(void *argument)
 {
-  /* USER CODE BEGIN LED_2_Blink */
-  /* Infinite loop */
-	LED2Delay = 500;
-  for(;;)
-  {
-    osDelay(LED2Delay);
-    HAL_GPIO_TogglePin(GPIOA , GPIO_PIN_4);
-    if (HAL_GetTick()-tim_val > 10000)
-    {
-    	TaskState=1;
-    	//tim_val=HAL_GetTick();
-    	osThreadResume(LED_1_TaskHandle);
-    	osThreadSuspend(LED_2_TaskHandle);
+  /* USER CODE BEGIN BlinkFastTask_Entry */
+  app_blink_task(argument, LD2_GPIO_Port, LD2_Pin, 100u);
+  /* USER CODE END BlinkFastTask_Entry */
+}
 
-    }
-
-  }
-  /* USER CODE END LED_2_Blink */
+/* USER CODE BEGIN Header_BlinkSlowTask_Entry */
+/**
+* @brief Function implementing the BlinkSlowTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_BlinkSlowTask_Entry */
+void BlinkSlowTask_Entry(void *argument)
+{
+  /* USER CODE BEGIN BlinkSlowTask_Entry */
+  app_blink_task(argument, LED2_GPIO_Port, LED2_Pin, 500u);
+  /* USER CODE END BlinkSlowTask_Entry */
 }
 
 /**
@@ -389,15 +299,9 @@ void LED_2_Blink(void *argument)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM3) {
     HAL_IncTick();
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
 
 /**
@@ -407,7 +311,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)
   {
@@ -426,8 +329,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  (void)file;
+  (void)line;
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
