@@ -40,3 +40,6 @@ desktop.ini
 
 # JetBrains IDE settings
 .idea/
+
+# Local credentials (ESP32 projects)
+secrets.h
