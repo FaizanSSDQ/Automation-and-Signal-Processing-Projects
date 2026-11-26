@@ -28,7 +28,7 @@ in CI on every push.
 | [DDS waveform generator](stm32/dds-waveform-generator) | NUCLEO-F103RB | 0.01 Hz–20 kHz DDS, PWM DAC fed by DMA burst, PolyBLEP anti-aliasing, sweeps, serial control | ✅ Complete |
 | [FreeRTOS task scheduling](stm32/freertos-task-scheduling) | NUCLEO-F103RB | Live priorities, preemption, starvation and time slicing; per-task CPU % from run-time stats; task-switch trace pins | ✅ Complete |
 | [Periodic tasks: drift vs jitter](stm32/freertos-periodic-tasks-jitter) | NUCLEO-F103RB | vTaskDelay vs vTaskDelayUntil under interference, cycle-counter timestamps, live period histograms | ✅ Complete |
-| [FreeRTOS: mutex & semaphore](stm32/freertos-mutex-semaphore) | NUCLEO-F103RB | Resource sharing and synchronisation | 🔧 Being rebuilt |
+| [Priority inversion vs inheritance](stm32/freertos-priority-inversion) | NUCLEO-F103RB | Binary semaphore vs mutex in a live low/medium/high scenario, blocking time measured per cycle | ✅ Complete |
 
 ### Nordic nRF52 (Zephyr, nRF Connect SDK)
 
