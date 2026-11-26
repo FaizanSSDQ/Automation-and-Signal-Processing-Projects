@@ -46,3 +46,39 @@ jobs:
         with:
           name: ${{ hashFiles(format('{0}/Makefile', matrix.project)) }}-firmware
           path: ${{ matrix.project }}/build/*.hex
+
+  esp32:
+    name: ESP32 · ${{ matrix.project }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - esp32/freertos-wifi-robot-car
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install arduino-cli
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install the ESP32 Arduino core
+        run: |
+          arduino-cli config init --overwrite
+          arduino-cli config add board_manager.additional_urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32@3.3.12
+
+      - name: Build firmware
+        run: make
+
+      - name: Host unit tests (C)
+        run: make test
+
+      - name: Python tool tests
+        if: hashFiles(format('{0}/tools/test_*.py', matrix.project)) != ''
+        run: |
+          pip install pytest numpy
+          python -m pytest -q tools
