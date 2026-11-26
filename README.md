@@ -41,6 +41,7 @@ in CI on every push.
 | Project | Highlights | Status |
 |---|---|---|
 | [FreeRTOS Wi-Fi robot car](esp32/freertos-wifi-robot-car) | Dual-core tasks, phone joystick page, obstacle avoidance and line following, link watchdog and fused distance sensing | ✅ Complete |
+| [ESP-NOW sensor network](esp32/espnow-sensor-network) | Deep-sleep nodes with alarm wake-up, CRC-checked packets, gateway dashboard with loss and RSSI per node, ThingSpeak upload | ✅ Complete |
 | [Function generator](esp32/function-generator) | Sine, square, triangle and sawtooth waveforms | 🔧 Being rebuilt |
 | [Logic analyzer](esp32/logic-analyzer) | Digital signal capture and display | 🔧 Being rebuilt |
 
