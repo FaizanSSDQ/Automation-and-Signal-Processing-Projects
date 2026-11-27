@@ -1,0 +1,54 @@
+name: MATLAB CI
+
+on:
+  push:
+    branches: [main]
+    paths: ['matlab/**', '.github/workflows/matlab.yml']
+  pull_request:
+    paths: ['matlab/**', '.github/workflows/matlab.yml']
+
+jobs:
+  matlab:
+    name: MATLAB · ${{ matrix.project }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - fourier-analysis-lab
+          - digital-filter-designer
+          - ble-gfsk-modem
+          - ppg-heart-rate-estimator
+          - imu-orientation-fusion
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MATLAB (no toolboxes needed)
+        uses: matlab-actions/setup-matlab@v2
+
+      - name: Run the tests
+        uses: matlab-actions/run-command@v2
+        with:
+          command: cd('matlab/${{ matrix.project }}'); addpath('tests'); run_tests
+
+  octave:
+    name: Octave · ${{ matrix.project }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - fourier-analysis-lab
+          - digital-filter-designer
+          - ble-gfsk-modem
+          - ppg-heart-rate-estimator
+          - imu-orientation-fusion
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install GNU Octave
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends octave
+
+      - name: Run the tests
+        working-directory: matlab/${{ matrix.project }}
+        run: octave-cli --no-gui --quiet --eval "addpath('tests'); run_tests"
