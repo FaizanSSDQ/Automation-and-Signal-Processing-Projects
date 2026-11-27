@@ -4,7 +4,7 @@
 ![STM32](https://img.shields.io/badge/STM32-HAL%20%7C%20FreeRTOS-03234B?logo=stmicroelectronics&logoColor=white)
 ![nRF52](https://img.shields.io/badge/nRF52-Zephyr%20%7C%20BLE-00A9CE?logo=nordicsemiconductor&logoColor=white)
 ![ESP32](https://img.shields.io/badge/ESP32-Arduino%20%7C%20FreeRTOS-E7352C?logo=espressif&logoColor=white)
-![MATLAB](https://img.shields.io/badge/MATLAB-DSP-0076A8)
+![MATLAB](https://img.shields.io/badge/MATLAB%20%2F%20Octave-DSP%20%C2%B7%20wireless%20%C2%B7%20wearables-0076A8)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 Firmware and signal-processing projects: real-time data acquisition with DMA, FreeRTOS and
@@ -50,13 +50,21 @@ in CI on every push.
 
 ### MATLAB (signals and systems, DSP)
 
+Base MATLAB only (no toolboxes); every project also runs in GNU Octave, and its tests run on
+both in CI.
+
 | Project | Highlights | Status |
 |---|---|---|
-| [Signal basics](matlab/signal-basics) | Impulse, step, ramp and sinusoidal signals | 🔧 Being rebuilt |
-| [Fourier series](matlab/fourier-series) | Series approximation and harmonic analysis | 🔧 Being rebuilt |
-| [Fourier transform](matlab/fourier-transform) | Spectra of multiple signals | 🔧 Being rebuilt |
-| [Filter design](matlab/filter-design) | Filtering and signal power | 🔧 Being rebuilt |
-| [Function generator](matlab/function-generator) | Rectangular, triangular and pulse waveforms | 🔧 Being rebuilt |
+| [Bluetooth LE GFSK modem](matlab/ble-gfsk-modem) | LE 1M PHY: packet with CRC-24 and whitening, GFSK, access-address sync, carrier-offset removal; 0.1 % BER at 11.6 dB | ✅ Complete |
+| [PPG heart-rate estimator](matlab/ppg-heart-rate-estimator) | Wrist PPG with motion artefacts, NLMS cancellation using the accelerometer: 47.5 → 0.1 bpm error while running | ✅ Complete |
+| [IMU orientation fusion](matlab/imu-orientation-fusion) | Quaternions; complementary, Mahony and Madgwick against ground truth (1.05° tilt RMS); three-stage fall detection | ✅ Complete |
+| [Digital filter designer](matlab/digital-filter-designer) | Kaiser FIR and Butterworth IIR from first principles, bit-exact Q15 model, CMSIS-DSP header export, coefficient-sensitivity demo | ✅ Complete |
+| [Fourier analysis lab](matlab/fourier-analysis-lab) | Fourier series vs closed forms, Gibbs overshoot (8.95 %), Parseval, FFT-based transforms, window side lobes | ✅ Complete |
+
+The original course scripts ([signal basics](matlab/signal-basics), [Fourier series](matlab/fourier-series),
+[Fourier transform](matlab/fourier-transform), [filter design](matlab/filter-design),
+[function generator](matlab/function-generator)) stay in place; the Fourier lab and the filter
+designer are their rebuilt versions.
 
 ### Python (vehicle modelling)
 
@@ -70,7 +78,7 @@ in CI on every push.
 stm32/    STM32CubeIDE projects (each with .ioc, Makefile, tests and docs)
 nrf52/    Nordic nRF52 projects on Zephyr / nRF Connect SDK
 esp32/    Arduino-core ESP32 sketches
-matlab/   MATLAB signal-processing scripts
+matlab/   MATLAB projects: wireless PHY, wearable DSP, filters, Fourier (MATLAB + Octave)
 python/   Python simulations
 ```
 
