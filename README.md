@@ -72,6 +72,7 @@ explanations): [elementary signals](matlab/signal-basics), [Fourier series](matl
 |---|---|---|
 | [Vehicle localisation with an ES-EKF](python/vehicle-localization-es-ekf) | 15-state error-state EKF fusing 200 Hz IMU, GNSS and LiDAR with bias estimation: 12 cm RMSE, consistent (NEES), survives a 30 s outage, detects a miscalibrated LiDAR | ✅ Complete |
 | [Autonomous path tracking](python/autonomous-path-tracking) | Kinematic bicycle model with actuator limits, pure pursuit vs Stanley on three tracks, curvature-limited speed profile; Stanley 2 cm RMS on a 15 m/s lane change | ✅ Complete |
+| [Bicycle kinematic model for path prediction](python/bicycle-kinematic-model) | Kinematic bicycle at rear axle, CG and front axle with slip angle; circle, figure eight, spiral and lane change from steering inputs; validity measured against a dynamic tyre model; 3 s path prediction beats CTRV by 2× with a Monte-Carlo cone | ✅ Complete |
 
 ## Repository layout
 ```

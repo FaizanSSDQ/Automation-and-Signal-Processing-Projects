@@ -17,6 +17,7 @@ jobs:
         project:
           - python/autonomous-path-tracking
           - python/vehicle-localization-es-ekf
+          - python/bicycle-kinematic-model
     defaults:
       run:
         working-directory: ${{ matrix.project }}
