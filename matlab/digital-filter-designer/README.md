@@ -129,10 +129,9 @@ export_c_header(sos, 'lp1k', 8000, 'lp1k.h');          % hand over to firmware
 
 ## Revision history
 
-Rebuilds the course scripts in [`filter-design`](../filter-design), which stay in place
-unchanged. The original applied an ideal frequency mask to an FFT; this version designs real FIR
-and IIR filters, measures them, models the fixed-point implementation and generates firmware
-code.
+Goes beyond the course exercise in [`filter-design`](../filter-design) (refined in place), which
+applies an ideal frequency mask with the DFT. This project designs real FIR and IIR filters,
+measures them, models the fixed-point implementation and generates firmware code.
 
 ---
 ## 👤 About the Author

@@ -61,10 +61,10 @@ both in CI.
 | [Digital filter designer](matlab/digital-filter-designer) | Kaiser FIR and Butterworth IIR from first principles, bit-exact Q15 model, CMSIS-DSP header export, coefficient-sensitivity demo | ✅ Complete |
 | [Fourier analysis lab](matlab/fourier-analysis-lab) | Fourier series vs closed forms, Gibbs overshoot (8.95 %), Parseval, FFT-based transforms, window side lobes | ✅ Complete |
 
-The original course scripts ([signal basics](matlab/signal-basics), [Fourier series](matlab/fourier-series),
-[Fourier transform](matlab/fourier-transform), [filter design](matlab/filter-design),
-[function generator](matlab/function-generator)) stay in place; the Fourier lab and the filter
-designer are their rebuilt versions.
+Signals and Systems course exercises, refined to the same standard (tests, figures, student
+explanations): [elementary signals](matlab/signal-basics), [Fourier series](matlab/fourier-series),
+[Fourier transform](matlab/fourier-transform), [DFT filtering](matlab/filter-design) and
+[waveform generator](matlab/function-generator).
 
 ### Python (vehicle modelling)
 

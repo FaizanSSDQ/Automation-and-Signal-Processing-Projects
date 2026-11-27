@@ -119,12 +119,11 @@ addpath examples; make_figures     % regenerates docs/*.png
 
 ## Revision history
 
-This project rebuilds the course scripts in [`fourier-series`](../fourier-series),
+This project goes beyond the course exercises in [`fourier-series`](../fourier-series),
 [`fourier-transform`](../fourier-transform), [`signal-basics`](../signal-basics) and
-[`function-generator`](../function-generator), which stay in place unchanged. The originals
-computed one series at a time with `quad` and scattered variables; this version turns them into
-tested functions, adds the closed-form checks, Parseval, the Gibbs measurement, the FFT-based
-transform and the window study.
+[`function-generator`](../function-generator), which have themselves been refined in place. Where
+those reproduce the assignments, this lab adds the closed-form checks for every waveform,
+Parseval, the Gibbs measurement, FFT-based transforms and the window study.
 
 ---
 ## 👤 About the Author

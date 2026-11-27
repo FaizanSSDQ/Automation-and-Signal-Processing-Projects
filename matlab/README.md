@@ -19,13 +19,19 @@ section for students. Continuous integration runs every test suite on MATLAB and
 | [**Digital filter designer**](digital-filter-designer) | Kaiser FIR and Butterworth IIR designed from first principles, bit-exact Q15 biquad model, CMSIS-DSP header export; shows a 16-bit 8th-order direct-form filter going unstable | 33 |
 | [**Fourier analysis lab**](fourier-analysis-lab) | Fourier series checked against closed forms, Gibbs overshoot measured at 8.95 %, Parseval, FFT-based transforms, window side lobes and leakage | 27 |
 
-## Course work (original)
+## Signals and Systems course exercises (refined)
 
-The first versions of these topics, from the Signals and Systems course, are kept as they were:
-[signal-basics](signal-basics), [fourier-series](fourier-series),
-[fourier-transform](fourier-transform), [filter-design](filter-design) and
-[function-generator](function-generator). The Fourier analysis lab and the digital filter
-designer are their rebuilt, tested versions.
+The course assignments, cleaned up to the same standard: duplicates and broken drafts removed,
+bugs fixed, each exercise turned into tested functions with figures and a student explanation.
+The original scripts remain in the repository history.
+
+| Exercise | What it covers | Tests |
+|---|---|---|
+| [**Elementary signals**](signal-basics) | Step, impulse, ramp, windows from steps, sinusoids and phase, energy and power | 13 |
+| [**Fourier series**](fourier-series) | Coefficients of the triangular pulse train for N = 7, 11, 17; spectrum; reconstruction; rectangular pulse train | 11 |
+| [**Fourier transform**](fourier-transform) | Pulses, exponentials, time shift and Parseval against the textbook pairs | 11 |
+| [**DFT filtering**](filter-design) | A pulse train through an ideal 2 Hz low-pass with the DFT; aliasing error measured | 10 |
+| [**Waveform generator**](function-generator) | Sine, square, triangle, sawtooth and pulse waves with their FFT harmonics; duty cycle | 17 |
 
 ## Running the projects
 
