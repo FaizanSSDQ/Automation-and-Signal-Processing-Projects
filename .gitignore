@@ -43,3 +43,7 @@ desktop.ini
 
 # Local credentials (ESP32 projects)
 secrets.h
+
+# Employer work kept local only: never commit
+nrf52/BMI270_Firmware/
+nrf52/Locked_RPR_Sensor_Firmware/
