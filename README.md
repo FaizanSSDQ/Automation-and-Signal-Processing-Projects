@@ -66,12 +66,12 @@ explanations): [elementary signals](matlab/signal-basics), [Fourier series](matl
 [Fourier transform](matlab/fourier-transform), [DFT filtering](matlab/filter-design) and
 [waveform generator](matlab/function-generator).
 
-### Python (vehicle modelling)
+### Python (autonomous driving)
 
 | Project | Highlights | Status |
 |---|---|---|
-| [Vehicle kinematic model](python/vehicle-kinematic-model) | Bicycle-model trajectory simulation | 🔧 Being rebuilt |
-| [EKF vehicle state estimation](python/ekf-vehicle-state-estimation) | Error-state Kalman filter with IMU, GNSS and LiDAR | 🔧 Being rebuilt |
+| [Vehicle localisation with an ES-EKF](python/vehicle-localization-es-ekf) | 15-state error-state EKF fusing 200 Hz IMU, GNSS and LiDAR with bias estimation: 12 cm RMSE, consistent (NEES), survives a 30 s outage, detects a miscalibrated LiDAR | ✅ Complete |
+| [Autonomous path tracking](python/autonomous-path-tracking) | Kinematic bicycle model with actuator limits, pure pursuit vs Stanley on three tracks, curvature-limited speed profile; Stanley 2 cm RMS on a 15 m/s lane change | ✅ Complete |
 
 ## Repository layout
 ```
