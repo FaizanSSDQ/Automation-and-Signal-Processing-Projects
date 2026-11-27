@@ -1,0 +1,37 @@
+name: Python CI
+
+on:
+  push:
+    branches: [main]
+    paths: ['python/**', '.github/workflows/python.yml']
+  pull_request:
+    paths: ['python/**', '.github/workflows/python.yml']
+
+jobs:
+  test:
+    name: Python · ${{ matrix.project }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - python/autonomous-path-tracking
+          - python/vehicle-localization-es-ekf
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install
+        run: pip install numpy matplotlib pillow pytest ruff
+
+      - name: Lint
+        run: ruff check --line-length 120 .
+
+      - name: Tests
+        run: python -m pytest -q
