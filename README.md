@@ -34,7 +34,8 @@ in CI on every push.
 
 | Project | Highlights | Status |
 |---|---|---|
-| [nRF52 projects](nrf52) | BLE, low-power design, sensor drivers and secure OTA updates | 🔧 In preparation |
+| [MotionCore: IMU for HealthBand](nrf52/motioncore-imu-healthband) | Wrist-motion engine for a health band: 1600 Hz IMU through the sensor FIFO, exact timestamps, 3D monitor, shock and free-fall detection | 🔒 Showcase · code on request |
+| [SkinSense: Optical Wear Detection](nrf52/skinsense-optical-wear-detection) | IR proximity for on-wrist detection and skin contact, BLE GATT control and streaming, hot-plug recovery, calibration | 🔒 Showcase · code on request |
 
 ### ESP32 (Arduino core, FreeRTOS)
 

@@ -1,0 +1,11 @@
+PySide6>=6.6
+pyqtgraph>=0.13.4
+#
+# ------------------------------------------------------------------
+#  Request Full Access to Author: Faizan Saleem Siddiqui
+#  Email: faizansaleemsdq@yahoo.com
+#  (2 lines of this file are hidden by the author)
+# ------------------------------------------------------------------
+#
+qasync>=0.27
+pyserial>=3.5

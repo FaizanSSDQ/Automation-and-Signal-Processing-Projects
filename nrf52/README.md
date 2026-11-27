@@ -18,9 +18,16 @@ nrf52/<project>/
 
 ## Projects
 
+Two health band projects are shown here as showcases. Their full folder structure is
+published, but every source file shows only its first and last two lines; the complete code
+is available on request. They also appear in
+[Health-BLE-Wearable-Devices](https://github.com/FaizanSSDQ/Health-BLE-Wearable-Devices).
+
 | Project | Highlights | Status |
 |---|---|---|
-| *Coming soon* | BLE peripherals, power optimisation, sensor drivers and secure OTA on the nRF52 | 🔧 In preparation |
+| [MotionCore: IMU for HealthBand](motioncore-imu-healthband) | Wrist-motion engine: BMI270 sampled at up to 1600 Hz through the sensor FIFO with exact sensor timestamps and live loss counters; desktop monitor with 3D orientation, Mahony fusion, shock and free-fall detection and calibration | 🔒 Showcase · code on request |
+| [SkinSense: Optical Proximity and Wear Detection](skinsense-optical-wear-detection) | Infrared proximity sensing for on-wrist detection and skin-contact quality; BLE GATT control and streaming, hot-plug recovery, distance calibration and a characterisation studio | 🔒 Showcase · code on request |
+| *More coming* | Power optimisation and secure OTA on the nRF52 | 🔧 In preparation |
 
 ## Building
 

@@ -1,0 +1,11 @@
+sample:
+  description: ROHM RPR-0720 proximity sensor on nRF52840 (Zephyr)
+#
+# ------------------------------------------------------------------
+#  Request Full Access to Author: Faizan Saleem Siddiqui
+#  Email: faizansaleemsdq@yahoo.com
+#  (4 lines of this file are hidden by the author)
+# ------------------------------------------------------------------
+#
+      - nrf52840dk/nrf52840
+    tags: sensor

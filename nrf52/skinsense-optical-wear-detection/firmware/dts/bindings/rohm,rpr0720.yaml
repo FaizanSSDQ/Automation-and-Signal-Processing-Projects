@@ -1,0 +1,11 @@
+description: ROHM RPR-0720 VCSEL proximity sensor
+
+#
+# ------------------------------------------------------------------
+#  Request Full Access to Author: Faizan Saleem Siddiqui
+#  Email: faizansaleemsdq@yahoo.com
+#  (1 lines of this file are hidden by the author)
+# ------------------------------------------------------------------
+#
+
+include: i2c-device.yaml
