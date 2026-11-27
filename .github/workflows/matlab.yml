@@ -20,6 +20,11 @@ jobs:
           - ble-gfsk-modem
           - ppg-heart-rate-estimator
           - imu-orientation-fusion
+          - signal-basics
+          - fourier-series
+          - fourier-transform
+          - filter-design
+          - function-generator
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +48,11 @@ jobs:
           - ble-gfsk-modem
           - ppg-heart-rate-estimator
           - imu-orientation-fusion
+          - signal-basics
+          - fourier-series
+          - fourier-transform
+          - filter-design
+          - function-generator
     steps:
       - uses: actions/checkout@v4
 
